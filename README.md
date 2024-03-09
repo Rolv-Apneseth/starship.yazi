@@ -30,6 +30,6 @@ require("starship"):setup()
 
 Make sure you have [starship](https://github.com/starship/starship) installed and in your `PATH`.
 
-## Acknowlegements
+## Acknowledgements
 
 - [sxyazi](https://github.com/sxyazi) for providing the code for this plugin and the demo video [in this comment](https://github.com/sxyazi/yazi/issues/767#issuecomment-1977082834)
