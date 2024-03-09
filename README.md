@@ -24,7 +24,7 @@ git clone https://github.com/Rolv-Apneseth/starship.yazi.git %AppData%\yazi\conf
 
 Add this to `~/.config/yazi/init.lua`:
 
-```toml
+```lua
 require("starship"):setup()
 ```
 
