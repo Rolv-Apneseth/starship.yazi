@@ -1,10 +1,13 @@
 # starship.yazi
 
-Starship prompt plugin for [yazi](https://github.com/sxyazi/yazi)
+Starship prompt plugin for [Yazi](https://github.com/sxyazi/yazi)
 
 
 https://github.com/Rolv-Apneseth/starship.yazi/assets/69486699/f7314687-5cb1-4d66-8d9d-cca960ba6716
 
+## Requirements
+
+- [Yazi](https://github.com/sxyazi/yazi) v0.2.4+
 
 ## Installation
 
