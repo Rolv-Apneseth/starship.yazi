@@ -7,15 +7,16 @@ end)
 
 return {
 	setup = function(st)
-		Header.cwd = function()
+		Header:children_remove(1, Header.LEFT)
+		Header:children_add(function() return ui.Line.parse(st.output or "") end, 1000, Header.LEFT)
+
+		ps.sub("cd", function()
 			local cwd = cx.active.current.cwd
 			if st.cwd ~= cwd then
 				st.cwd = cwd
-				ya.manager_emit("plugin", { st._name, args = ya.quote(tostring(cwd)) })
+				ya.manager_emit("plugin", { st._id, args = ya.quote(tostring(cwd), true) })
 			end
-
-			return ui.Line.parse(st.output or "")
-		end
+		end)
 	end,
 
 	entry = function(_, args)
