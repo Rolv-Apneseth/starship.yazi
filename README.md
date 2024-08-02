@@ -37,6 +37,13 @@ Add this to `~/.config/yazi/init.lua`:
 require("starship"):setup()
 ```
 
+If you wish to define a custom config file for `starship` to use, you can pass in an _absolute_ path
+to the setup function like this:
+
+```lua
+starship:setup({ config_file = "/home/rolv/.config/starship_secondary.toml" })
+```
+
 Make sure you have [starship](https://github.com/starship/starship) installed and in your `PATH`.
 
 ## Extra
