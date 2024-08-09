@@ -37,7 +37,7 @@ Add this to `~/.config/yazi/init.lua`:
 require("starship"):setup()
 ```
 
-If you wish to define a custom config file for `starship` to use, you can pass in an _absolute_ path
+If you wish to define a custom config file for `starship` to use, you can pass in a path
 to the setup function like this:
 
 ```lua

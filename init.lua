@@ -5,6 +5,12 @@ local save = ya.sync(function(st, cwd, output)
     end
 end)
 
+-- Helper function for accessing the `config_file` state variable
+---@return string
+local get_config_file = ya.sync(function(st)
+    return st.config_file
+end)
+
 return {
     ---User arguments for setup method
     ---@class SetupArgs
@@ -21,11 +27,19 @@ return {
         end, 1000, Header.LEFT)
 
         -- Check for custom starship config file
-        local config_file = nil
         if args ~= nil and args.config_file ~= nil then
             local url = Url(args.config_file)
             if url.is_regular then
-                config_file = ya.quote(tostring(url), true)
+                local config_file = args.config_file
+
+                -- Manually replace '~' and '$HOME' at the start of the path with the OS environment variable
+                local home = os.getenv("HOME")
+                if home then
+                    home = tostring(home)
+                    config_file = config_file:gsub("^~", home):gsub("^$HOME", home)
+                end
+
+                st.config_file = config_file
             end
         end
 
@@ -34,14 +48,9 @@ return {
             local cwd = cx.active.current.cwd
             if st.cwd ~= cwd then
                 st.cwd = cwd
-                local args = ya.quote(tostring(cwd), true)
-                if config_file ~= nil then
-                    args = string.format("%s %s", args, config_file)
-                end
-
                 ya.manager_emit("plugin", {
                     st._id,
-                    args = args,
+                    args = ya.quote(tostring(cwd), true),
                 })
             end
         end)
@@ -51,8 +60,9 @@ return {
         local command = Command("starship"):arg("prompt"):cwd(args[1]):env("STARSHIP_SHELL", "")
 
         -- Point to custom starship config
-        if args[2] ~= nil then
-            command = command:env("STARSHIP_CONFIG", args[2])
+        local config_file = get_config_file()
+        if config_file then
+            command = command:env("STARSHIP_CONFIG", config_file)
         end
 
         local output = command:output()
