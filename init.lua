@@ -5,15 +5,25 @@ local save = ya.sync(function(st, cwd, output)
     end
 end)
 
+-- Helper function for accessing `try_cut_character` state
+---@return boolean
+local try_cut_character = ya.sync(function(st)
+    return st.try_cut_character
+end)
+
 return {
     ---User arguments for setup method
     ---@class SetupArgs
     ---@field config_file string Absolute path to a starship config file
+    ---@field try_cut_character boolean Whether the plugin should attempt to cut the character/prompt icon from the end of the prompt. Only useful for single line prompts.
 
     --- Setup plugin
     --- @param st table State
     --- @param args SetupArgs|nil
     setup = function(st, args)
+        --- Pass args to state
+        st.try_cut_character = args and args.try_cut_character or false
+
         -- Replace default header widget
         Header:children_remove(1, Header.LEFT)
         Header:children_add(function()
@@ -56,8 +66,24 @@ return {
         end
 
         local output = command:output()
-        if output then
-            save(args[1], output.stdout:gsub("^%s+", ""))
+        if not output then
+            return
         end
+
+        local cut = 0
+        if try_cut_character() then
+            local character = Command("starship")
+                :arg("module")
+                :arg("character")
+                :cwd(args[1])
+                :env("STARSHIP_SHELL", "")
+                :output()
+            if character ~= nil then
+                cut = string.len(character.stdout)
+            end
+        end
+
+        local line = output.stdout:gsub("^%s+", "")
+        save(args[1], ya.truncate(line, { max = string.len(line) - cut }))
     end,
 }
