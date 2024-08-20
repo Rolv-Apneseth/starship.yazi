@@ -44,7 +44,8 @@ return {
         end
 
         -- Pass current working directory and custom config path (if specified) to the plugin's entry point
-        ps.sub("cd", function()
+        ---Callback for subscribers to update the prompt
+        local callback = function()
             local cwd = cx.active.current.cwd
             if st.cwd ~= cwd then
                 st.cwd = cwd
@@ -53,7 +54,11 @@ return {
                     args = ya.quote(tostring(cwd), true),
                 })
             end
-        end)
+        end
+
+        -- Subscribe to events
+        ps.sub("cd", callback)
+        ps.sub("tab", callback)
     end,
 
     entry = function(_, args)
