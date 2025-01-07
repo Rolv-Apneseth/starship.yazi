@@ -67,7 +67,11 @@ return {
         -- a version before this change, they can use the old implementation.
         -- https://github.com/sxyazi/yazi/pull/1966
         local args = job_or_args.args or job_or_args
-        local command = Command("starship"):arg("prompt"):cwd(args[1]):env("STARSHIP_SHELL", "")
+        local command = Command("starship")
+            :arg("prompt")
+            :stdin(Command.INHERIT)
+            :cwd(args[1])
+            :env("STARSHIP_SHELL", "")
 
         -- Point to custom starship config
         local config_file = get_config_file()
