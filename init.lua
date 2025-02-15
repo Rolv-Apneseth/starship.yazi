@@ -1,5 +1,10 @@
 --- @since 25.2.7
 
+-- For development
+--[[ local function notify(message) ]]
+--[[     ya.notify({ title = "Starship", content = message, timeout = 5 }) ]]
+--[[ end ]]
+
 local save = ya.sync(function(st, cwd, output)
     if cx.active.current.cwd == Url(cwd) then
         st.output = output
@@ -17,33 +22,67 @@ return {
     ---User arguments for setup method
     ---@class SetupArgs
     ---@field config_file string Absolute path to a starship config file
+    ---@field hide_flags boolean Whether to hide all flags (such as filter and search). Recommended for themes which are intended to take the full width of the terminal.
+    ---@field flags_after_prompt boolean Whether to place flags (such as filter and search) after the starship prompt. By default this is true.
 
     --- Setup plugin
     --- @param st table State
     --- @param args SetupArgs|nil
     setup = function(st, args)
-        -- Replace default header widget
-        Header:children_remove(1, Header.LEFT)
-        Header:children_add(function()
-            return ui.Line.parse(st.output or "")
-        end, 1000, Header.LEFT)
+        local hide_flags = false
+        local flags_after_prompt = true
 
-        -- Check for custom starship config file
-        if args ~= nil and args.config_file ~= nil then
-            local url = Url(args.config_file)
-            if url.is_regular then
-                local config_file = args.config_file
+        -- Check setup args
+        if args ~= nil then
+            if args.config_file ~= nil then
+                local url = Url(args.config_file)
+                if url.is_regular then
+                    local config_file = args.config_file
 
-                -- Manually replace '~' and '$HOME' at the start of the path with the OS environment variable
-                local home = os.getenv("HOME")
-                if home then
-                    home = tostring(home)
-                    config_file = config_file:gsub("^~", home):gsub("^$HOME", home)
+                    -- Manually replace '~' and '$HOME' at the start of the path with the OS environment variable
+                    local home = os.getenv("HOME")
+                    if home then
+                        home = tostring(home)
+                        config_file = config_file:gsub("^~", home):gsub("^$HOME", home)
+                    end
+
+                    st.config_file = config_file
                 end
+            end
 
-                st.config_file = config_file
+            if args.hide_flags ~= nil then
+                hide_flags = args.hide_flags
+            end
+
+            if args.flags_after_prompt ~= nil then
+                flags_after_prompt = args.flags_after_prompt
             end
         end
+
+        -- Replace default header widget
+        Header:children_remove(1, Header.LEFT)
+        Header:children_add(function(self)
+            local max = self._area.w - self._right_width
+            if max <= 0 then
+                return ""
+            end
+
+            if hide_flags or not st.output then
+                return ui.Line.parse(st.output or "")
+            end
+
+            -- Split `st.output` at the first line break (or keep as is if none was found)
+            local output = st.output:match("([^\n]*)\n?") or st.output
+
+            local flags = self:flags()
+            if flags_after_prompt then
+                output = output .. " " .. flags
+            else
+                output = flags .. " " .. output
+            end
+
+            return ui.Line.parse(output)
+        end, 1000, Header.LEFT)
 
         -- Pass current working directory and custom config path (if specified) to the plugin's entry point
         ---Callback for subscribers to update the prompt
