@@ -2,14 +2,12 @@
 
 -- For development
 --[[ local function notify(message) ]]
---[[     ya.notify({ title = "Starship", content = message, timeout = 5 }) ]]
+--[[     ya.notify({ title = "Starship", content = message, timeout = 3 }) ]]
 --[[ end ]]
 
-local save = ya.sync(function(st, cwd, output)
-    if cx.active.current.cwd == Url(cwd) then
-        st.output = output
-        ya.render()
-    end
+local save = ya.sync(function(st, _cwd, output)
+    st.output = output
+    ya.render()
 end)
 
 -- Helper function for accessing the `config_file` state variable
