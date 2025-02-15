@@ -32,14 +32,23 @@ Add this to `~/.config/yazi/init.lua`:
 require("starship"):setup()
 ```
 
-If you wish to define a custom config file for `starship` to use, you can pass in a path
-to the setup function like this:
+Make sure you have [starship](https://github.com/starship/starship) installed and in your `PATH`.
+
+## Config
+
+Here is an example with all available config options:
 
 ```lua
-starship:setup({ config_file = "/home/rolv/.config/starship_secondary.toml" })
+require("starship"):setup({
+    -- Hide flags (such as filter, find and search). This is recommended for starship themes which
+    -- are intended to go across the entire width of the terminal.
+    hide_flags = false, -- Default: false
+    -- Whether to place flags after the starship prompt. False means the flags will be placed before the prompt.
+    flags_after_prompt = true, -- Default: true
+    -- Custom starship configuration file to use
+    config_file = "~/.config/starship_full.toml", -- Default: nil
+})
 ```
-
-Make sure you have [starship](https://github.com/starship/starship) installed and in your `PATH`.
 
 ## Extra
 
