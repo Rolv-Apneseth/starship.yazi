@@ -78,14 +78,13 @@ Tab.build = function(self, ...)
 
     local c = self._chunks
     self._chunks = {
-        c[1]:padding(ui.Padding.y(1)),
-        c[2]:padding(ui.Padding(c[1].w > 0 and 0 or 1, c[3].w > 0 and 0 or 1, 1, 1)),
-        c[3]:padding(ui.Padding.y(1)),
+        c[1]:pad(ui.Pad.y(1)),
+        c[2]:pad(ui.Pad(1, c[3].w > 0 and 0 or 1, 1, c[1].w > 0 and 0 or 1)),
+        c[3]:pad(ui.Pad.y(1)),
     }
 
-    local style = THEME.manager.border_style
+    local style = th.mgr.border_style
     self._base = ya.list_merge(self._base or {}, {
-        ui.Border(ui.Border.ALL):area(self._area):type(ui.Border.ROUNDED):style(style),
         ui.Bar(ui.Bar.RIGHT):area(self._chunks[1]):style(style),
         ui.Bar(ui.Bar.LEFT):area(self._chunks[1]):style(style),
 
