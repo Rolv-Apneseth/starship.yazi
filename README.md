@@ -101,8 +101,8 @@ end
 </details>
 
 > [!NOTE]
-> This works by overriding your `Tab.build` function so make sure this is the only place you're doing that in your config. For example, this would be incompatible with the [full-border plugin](https://github.com/yazi-rs/plugins/tree/main/full-border.yazi)
-
+> This works by overriding your `Tab.build` function so make sure this is the only place you're doing that in your config.
+>
 ## Thanks
 
 - [sxyazi](https://github.com/sxyazi) for providing the code for this plugin and the demo video [in this comment](https://github.com/sxyazi/yazi/issues/767#issuecomment-1977082834)
