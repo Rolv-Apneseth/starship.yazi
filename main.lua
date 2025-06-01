@@ -1,4 +1,4 @@
---- @since 25.4.8
+--- @since 25.5.28
 
 -- For development
 --[[ local function notify(message) ]]
@@ -18,24 +18,24 @@ end)
 
 return {
     ---User arguments for setup method
-    ---@class SetupArgs
+    ---@class Setuparg
     ---@field config_file string Absolute path to a starship config file
     ---@field hide_flags boolean Whether to hide all flags (such as filter and search). Recommended for themes which are intended to take the full width of the terminal.
     ---@field flags_after_prompt boolean Whether to place flags (such as filter and search) after the starship prompt. By default this is true.
 
     --- Setup plugin
     --- @param st table State
-    --- @param args SetupArgs|nil
-    setup = function(st, args)
+    --- @param arg Setuparg|nil
+    setup = function(st, arg)
         local hide_flags = false
         local flags_after_prompt = true
 
-        -- Check setup args
-        if args ~= nil then
-            if args.config_file ~= nil then
-                local url = Url(args.config_file)
+        -- Check setup arg
+        if arg ~= nil then
+            if arg.config_file ~= nil then
+                local url = Url(arg.config_file)
                 if url.is_regular then
-                    local config_file = args.config_file
+                    local config_file = arg.config_file
 
                     -- Manually replace '~' and '$HOME' at the start of the path with the OS environment variable
                     local home = os.getenv("HOME")
@@ -48,12 +48,12 @@ return {
                 end
             end
 
-            if args.hide_flags ~= nil then
-                hide_flags = args.hide_flags
+            if arg.hide_flags ~= nil then
+                hide_flags = arg.hide_flags
             end
 
-            if args.flags_after_prompt ~= nil then
-                flags_after_prompt = args.flags_after_prompt
+            if arg.flags_after_prompt ~= nil then
+                flags_after_prompt = arg.flags_after_prompt
             end
         end
 
@@ -66,7 +66,7 @@ return {
             end
 
             if hide_flags or not st.output then
-                return ui.Line.parse(st.output or "")
+                return ui.Align.parse(st.output or "")
             end
 
             -- Split `st.output` at the first line break (or keep as is if none was found)
@@ -79,7 +79,7 @@ return {
                 output = flags .. " " .. output
             end
 
-            return ui.Line.parse(output)
+            return ui.Align.parse(output)
         end, 1000, Header.LEFT)
 
         -- Pass current working directory and custom config path (if specified) to the plugin's entry point
@@ -89,7 +89,7 @@ return {
             if st.cwd ~= cwd then
                 st.cwd = cwd
 
-                ya.manager_emit("plugin", {
+                ya.emit("plugin", {
                     st._id,
                     ya.quote(tostring(cwd), true),
                 })
@@ -102,11 +102,11 @@ return {
     end,
 
     entry = function(_, job)
-        local args = job.args
+        local arg = job.arg
         local command = Command("starship")
             :arg("prompt")
             :stdin(Command.INHERIT)
-            :cwd(args[1])
+            :cwd(arg[1])
             :env("STARSHIP_SHELL", "")
 
         -- Point to custom starship config
@@ -117,7 +117,7 @@ return {
 
         local output = command:output()
         if output then
-            save(args[1], output.stdout:gsub("^%s+", ""))
+            save(arg[1], output.stdout:gsub("^%s+", ""))
         end
     end,
 }
