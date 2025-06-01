@@ -1,4 +1,4 @@
---- @since 25.4.8
+--- @since 25.5.28
 
 -- For development
 --[[ local function notify(message) ]]
@@ -89,7 +89,7 @@ return {
             if st.cwd ~= cwd then
                 st.cwd = cwd
 
-                ya.manager_emit("plugin", {
+                ya.emit("plugin", {
                     st._id,
                     ya.quote(tostring(cwd), true),
                 })
