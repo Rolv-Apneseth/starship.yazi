@@ -89,7 +89,10 @@ return {
             if st.cwd ~= cwd then
                 st.cwd = cwd
 
-                ya.manager_emit("plugin", {
+                -- `ya.emit` as of 25.5.28
+                local emit = ya.emit or ya.manager_emit
+
+                emit("plugin", {
                     st._id,
                     ya.quote(tostring(cwd), true),
                 })
