@@ -113,6 +113,7 @@ return {
             :stdin(Command.INHERIT)
             :cwd(args[1])
             :env("STARSHIP_SHELL", "")
+            :env("PWD", args[1])
 
         -- Point to custom starship config
         local config_file = get_config_file()
