@@ -33,7 +33,8 @@ return {
     ---@field hide_flags boolean Whether to hide all flags (such as filter and search). Default value is false.
     ---@field flags_after_prompt boolean Whether to place flags (such as filter and search) after the starship prompt. Default value is true.
     ---@field show_right_prompt boolean Whether to enable starship right prompt support. Default value is false.
-    ---@field hide_count boolean Whether to hide the count component. Only has an effect when show_right_prompt is true. Default value is false.
+    ---@field hide_count boolean Whether to hide the count widget. Only has an effect when show_right_prompt is true. Default value is false.
+    ---@field count_separator string Set a custom separator between the count widget and the right prompt. Default value is " ", set to "" for no space.
 
     --- Setup plugin
     --- @param st table State
@@ -42,6 +43,7 @@ return {
         local hide_flags = false
         local flags_after_prompt = true
         local hide_count = false
+        local count_separator = " "
 
         -- Check setup args
         if args ~= nil then
@@ -69,6 +71,10 @@ return {
 
             if args.hide_count ~= nil then
                 hide_count = args.hide_count
+            end
+
+            if args.count_separator ~= nil then
+                count_separator = args.count_separator
             end
 
             if args.hide_flags ~= nil then
@@ -136,7 +142,7 @@ return {
                     if count ~= 0 then
                         line = ui.Line({
                             line,
-                            ui.Span(" "),
+                            ui.Span(count_separator),
                             ui.Span(string.format(" %d ", count)):style(style),
                         })
                     end
