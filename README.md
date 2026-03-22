@@ -109,4 +109,8 @@ end
 
 ## Thanks
 
-- [sxyazi](https://github.com/sxyazi) for providing the code for this plugin and the demo video [in this comment](https://github.com/sxyazi/yazi/issues/767#issuecomment-1977082834)
+- [sxyazi](https://github.com/sxyazi) for creating and maintaining Yazi, and also
+  for providing the initial code and the demo video for this plugin
+  in [this comment](https://github.com/sxyazi/yazi/issues/767#issuecomment-1977082834)
+- The authors and maintainers of [starship](https://github.com/starship/starship), which has been my
+  prompt of choice for many years
