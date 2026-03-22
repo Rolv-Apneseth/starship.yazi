@@ -71,10 +71,10 @@ local old_build = Tab.build
 Tab.build = function(self, ...)
     local bar = function(c, x, y)
         if x <= 0 or x == self._area.w - 1 then
-            return ui.Bar(ui.Bar.TOP):area(ui.Rect.default)
+            return ui.Bar(ui.Edge.TOP):area(ui.Rect.default)
         end
 
-        return ui.Bar(ui.Bar.TOP)
+        return ui.Bar(ui.Edge.TOP)
             :area(ui.Rect({
                 x = x,
                 y = math.max(0, y),
@@ -91,11 +91,7 @@ Tab.build = function(self, ...)
         c[3]:pad(ui.Pad.y(1)),
     }
 
-    local style = th.mgr.border_style
     self._base = ya.list_merge(self._base or {}, {
-        ui.Bar(ui.Bar.RIGHT):area(self._chunks[1]):style(style),
-        ui.Bar(ui.Bar.LEFT):area(self._chunks[1]):style(style),
-
         bar("┬", c[1].right - 1, c[1].y),
         bar("┴", c[1].right - 1, c[1].bottom - 1),
         bar("┬", c[2].right, c[2].y),
