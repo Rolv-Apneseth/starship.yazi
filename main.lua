@@ -26,6 +26,12 @@ local should_show_right_prompt = ya.sync(function(st)
     return st.show_right_prompt
 end)
 
+--- Helper function for accessing `hide_character` state variable
+---@return boolean
+local get_hide_character = ya.sync(function(st)
+    return st.hide_character
+end)
+
 return {
     ---User arguments for setup method
     ---@class SetupArgs
@@ -35,6 +41,7 @@ return {
     ---@field show_right_prompt boolean Whether to enable starship right prompt support. Default value is false.
     ---@field hide_count boolean Whether to hide the count widget. Only has an effect when show_right_prompt is true. Default value is false.
     ---@field count_separator string Set a custom separator between the count widget and the right prompt. Default value is " ", set to "" for no space.
+    ---@field hide_character boolean Whether to hide the character module from the prompt. Default value is false.
 
     --- Setup plugin
     --- @param st table State
@@ -83,6 +90,10 @@ return {
 
             if args.flags_after_prompt ~= nil then
                 flags_after_prompt = args.flags_after_prompt
+            end
+
+            if args.hide_character ~= nil then
+                st.hide_character = args.hide_character
             end
         end
 
@@ -226,6 +237,26 @@ return {
         local output_left = command_left:output()
         if output_left then
             outputs.left = output_left.stdout:gsub("^%s+", "")
+        end
+
+        -- If hide_character is enabled, strip the character module output from the prompt
+        local hide_character = get_hide_character()
+        if hide_character and outputs.left ~= "" then
+            local char_result = Command("starship")
+                :arg("module")
+                :arg("character")
+                :stdin(Command.INHERIT)
+                :cwd(args[1])
+                :env("STARSHIP_SHELL", "")
+                :env("PWD", args[1])
+                :output()
+            if char_result then
+                local char_output = char_result.stdout:gsub("^%s+", ""):gsub("%s+$", "")
+                if char_output ~= "" then
+                    -- Remove trailing whitespace and the character, then re-trim
+                    outputs.left = outputs.left:gsub(char_output .. "%s*$", ""):gsub("%s+$", "")
+                end
+            end
         end
 
         -- If support for right prompt is enabled, execute right prompt command and save output

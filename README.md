@@ -55,6 +55,9 @@ require("starship"):setup({
     -- Separator to place between the right prompt and the count widget. Use `count_separator = ""`
     -- to have no space between the widgets.
     count_separator = " ",
+    -- Whether to hide the character module (e.g. "❯") from the prompt. This is useful if your
+    -- starship config places the character on the same line as other modules.
+    hide_character = false,
 })
 ```
 
