@@ -49,7 +49,7 @@ return {
         if args ~= nil then
             if args.config_file ~= nil then
                 local url = Url(args.config_file)
-                if url.is_regular then
+                if url.spec.is_regular then
                     local config_file = args.config_file
 
                     -- Manually replace '~' and '$HOME' at the start of the path with the OS environment variable
